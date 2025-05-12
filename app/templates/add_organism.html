@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить организм</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Добавить новый организм</h1>
+    <form method="post">
+        <label for="id">ID организма:</label><br>
+        <input type="text" name="id" required><br><br>
+
+        <label for="name">Название организма:</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label for="description">Описание:</label><br>
+        <textarea name="description" rows="4" cols="50"></textarea><br><br>
+
+        <input type="submit" value="Добавить организм">
+    </form>
+    <br>
+    <a href="{{ url_for('index') }}">Назад</a>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация об организме</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>{{ organism.name }}</h1>
+    <p>{{ organism.description }}</p>
+    <h2>Гены организма:</h2>
+    <ul>
+        {% for gene in organism.genes %}
+        <li>{{ gene.id }} - {{ gene.sequence }}</li>
+        {% endfor %}
+    </ul>
+    <p>Количество генов: {{ organism.gene_count }}</p>
+    <a href="{{ url_for('index') }}">Назад</a>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать ген</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Редактировать ген: {{ gene.id }}</h1>
+    <form method="post">
+        <label for="sequence">Новая последовательность:</label><br>
+        <textarea name="sequence" rows="4" cols="50" required>{{ gene.sequence }}</textarea><br><br>
+        <input type="submit" value="Сохранить">
+    </form>
+    <br>
+    <a href="{{ url_for('index') }}">Назад</a>
+</body>
+</html>
