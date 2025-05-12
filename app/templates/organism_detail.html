@@ -1,20 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Информация об организме</title>
+    <title>{{ organism.name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>{{ organism.name }}</h1>
-    <p>{{ organism.description }}</p>
-    <h2>Гены организма:</h2>
-    <ul>
+    <p><strong>ID:</strong> {{ organism.id }}</p>
+    <p><strong>Описание:</strong> {{ organism.description }}</p>
+    <p><strong>Кол-во генов:</strong> {{ organism.gene_count }}</p>
+
+    <h2>Гены:</h2>
+    <table>
+        <tr>
+            <th>ID гена</th>
+            <th>Последовательность</th>
+            <th>Действия</th>
+        </tr>
         {% for gene in organism.genes %}
-        <li>{{ gene.id }} - {{ gene.sequence }}</li>
+        <tr>
+            <td>{{ gene.id }}</td>
+            <td>{{ gene.sequence }}</td>
+            <td>
+                <a href="{{ url_for('edit_gene', gene_id=gene.id) }}">Редактировать</a> |
+                <a href="{{ url_for('delete_gene', gene_id=gene.id) }}">Удалить</a>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
-    <p>Количество генов: {{ organism.gene_count }}</p>
-    <a href="{{ url_for('index') }}">Назад</a>
+    </table>
+
+    <br>
+    <a href="{{ url_for('index') }}">Назад ко всем организмам</a>
 </body>
 </html>

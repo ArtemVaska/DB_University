@@ -7,17 +7,17 @@
 </head>
 <body>
     <h1>Добавить новый ген</h1>
-    <form method="post">
-        <label for="id">ID гена:</label><br>
-        <input type="text" name="id" required><br><br>
+    <form method="POST">
+        <label for="id">ID гена:</label>
+        <input type="text" name="id" id="id" value="{{ request.form['id'] if request.form.get('id') else '' }}" required><br><br>
 
-        <label for="sequence">Нуклеотидная последовательность:</label><br>
-        <textarea name="sequence" rows="4" cols="50" required></textarea><br><br>
+        <label for="sequence">Последовательность:</label>
+        <textarea name="sequence" rows="4" cols="50" required>{{ request.form['sequence'] if request.form.get('sequence') else '' }}</textarea><br><br>
 
-        <label for="organism_id">Организм:</label><br>
-        <select name="organism_id" required>
+        <label for="organism_id">Организм:</label>
+        <select name="organism_id" id="organism_id" required>
             {% for organism in organisms %}
-            <option value="{{ organism.id }}">{{ organism.name }}</option>
+                <option value="{{ organism.id }}" {% if organism.id == request.form['organism_id'] %}selected{% endif %}>{{ organism.name }}</option>
             {% endfor %}
         </select><br><br>
 
@@ -26,4 +26,15 @@
     <br>
     <a href="{{ url_for('index') }}">Назад</a>
 </body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+    {% for category, message in messages %}
+      <li style="color: {% if category == 'warning' %}orange{% elif category == 'success' %}green{% else %}black{% endif %};">
+        {{ message }}
+      </li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 </html>

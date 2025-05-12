@@ -1,32 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Гены</title>
+    <title>Список организмов</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Список всех генов</h1>
+    <h1>Список организмов</h1>
     <table>
         <tr>
-            <th>ID Гена</th>
-            <th>Последовательность</th>
-            <th>Организм</th>
-            <th>Действия</th>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Кол-во генов</th>
+            <th>Действие</th>
         </tr>
-        {% for gene in genes %}
+        {% for organism in organisms %}
         <tr>
-            <td>{{ gene.id }}</td>
-            <td>{{ gene.sequence }}</td>
-            <td>{{ gene.organism.name }}</td>
+            <td>{{ organism.id }}</td>
+            <td>{{ organism.name }}</td>
+            <td>{{ organism.gene_count }}</td>
             <td>
-                <a href="{{ url_for('edit_gene', gene_id=gene.id) }}">Редактировать</a>
-                <a href="{{ url_for('delete_gene', gene_id=gene.id) }}">Удалить</a>
+                <a href="{{ url_for('organism_detail', organism_id=organism.id) }}">Подробнее</a> |
+
+                <!-- Форма для удаления всех генов -->
+                <form action="{{ url_for('delete_all_genes', organism_id=organism.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="button"
+                            onclick="return confirm('Вы уверены, что хотите удалить все гены для организма с ID: {{ organism.id }} ({{ organism.name }})?')">
+                        Удалить все гены
+                    </button>
+                </form>
             </td>
         </tr>
         {% endfor %}
     </table>
+    <br>
+    <a href="{{ url_for('add_organism') }}">Добавить организм</a> |
     <a href="{{ url_for('add_gene') }}">Добавить ген</a>
-    <a href="{{ url_for('add_organism') }}">Добавить организм</a>
 </body>
 </html>

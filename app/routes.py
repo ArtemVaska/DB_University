@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from app import app, db
 from app.models import Gene, Organism
 
@@ -6,8 +6,8 @@ from app.models import Gene, Organism
 # Главная страница — список всех генов
 @app.route('/')
 def index():
-    genes = Gene.query.all()
-    return render_template('index.html', genes=genes)
+    organisms = Organism.query.all()
+    return render_template('index.html', organisms=organisms)
 
 
 # Просмотр информации об организме
@@ -20,20 +20,27 @@ def organism_detail(organism_id):
 # Добавление нового гена
 @app.route('/add_gene', methods=['GET', 'POST'])
 def add_gene():
+    organisms = Organism.query.all()
+
     if request.method == 'POST':
         gene_id = request.form['id']
         sequence = request.form['sequence']
         organism_id = request.form['organism_id']
 
+        # Проверка на дубликат
+        existing_gene = Gene.query.get(gene_id)
+        if existing_gene:
+            flash(f'Ген с ID {gene_id} уже существует.', 'warning')
+            return render_template('add_gene.html', organisms=organisms)
+
         organism = Organism.query.get(organism_id)
         if organism:
             new_gene = Gene(id=gene_id, sequence=sequence, organism_id=organism.id)
             db.session.add(new_gene)
-            organism.update_gene_count()  # Обновление количества генов для организма
+            organism.update_gene_count()
             db.session.commit()
-            return redirect(url_for('index'))
+            flash(f'Ген с ID {gene_id} успешно добавлен.', 'success')
 
-    organisms = Organism.query.all()
     return render_template('add_gene.html', organisms=organisms)
 
 
@@ -45,12 +52,35 @@ def add_organism():
         name = request.form['name']
         description = request.form['description']
 
+        # Проверка на дубликат
+        existing_organism = Organism.query.get(organism_id)
+        if existing_organism:
+            flash(f'Организм с ID {organism_id} уже существует.', 'warning')
+            return render_template('add_organism.html')
+
         new_organism = Organism(id=organism_id, name=name, description=description)
         db.session.add(new_organism)
         db.session.commit()
-        return redirect(url_for('index'))
+        flash(f'Организм с ID {organism_id} и названием {name} успешно добавлен.', 'success')
 
     return render_template('add_organism.html')
+
+
+# Изменение последовательности гена
+@app.route('/edit_gene/<string:gene_id>', methods=['GET', 'POST'])
+def edit_gene(gene_id):
+    gene = Gene.query.get_or_404(gene_id)
+    if request.method == 'POST':
+        gene.sequence = request.form['sequence']
+        db.session.commit()
+
+        # Уведомление о том, что последовательность обновлена
+        flash('Последовательность обновлена', 'success')
+
+        # Остаёмся на той же странице
+        return redirect(url_for('edit_gene', gene_id=gene.id))
+
+    return render_template('edit_gene.html', gene=gene)
 
 
 # Удаление гена
@@ -65,12 +95,15 @@ def delete_gene(gene_id):
     return redirect(url_for('organism_detail', organism_id=organism_id))
 
 
-# Изменение последовательности гена
-@app.route('/edit_gene/<string:gene_id>', methods=['GET', 'POST'])
-def edit_gene(gene_id):
-    gene = Gene.query.get_or_404(gene_id)
-    if request.method == 'POST':
-        gene.sequence = request.form['sequence']
-        db.session.commit()
-        return redirect(url_for('index'))
-    return render_template('edit_gene.html', gene=gene)
+@app.route('/delete_all_genes/<string:organism_id>', methods=['POST'])
+def delete_all_genes(organism_id):
+    organism = Organism.query.get_or_404(organism_id)
+
+    # Удаляем все гены этого организма
+    Gene.query.filter_by(organism_id=organism.id).delete()
+    db.session.commit()
+
+    # Обновляем количество генов для организма
+    organism.update_gene_count()
+
+    return redirect(url_for('index'))

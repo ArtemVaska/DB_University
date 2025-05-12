@@ -1,18 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Редактировать ген</title>
+    <title>Редактирование гена</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Редактировать ген: {{ gene.id }}</h1>
-    <form method="post">
-        <label for="sequence">Новая последовательность:</label><br>
+
+    <h1>Редактирование гена: {{ gene.id }}</h1>
+
+    <!-- Форма для редактирования -->
+    <form method="POST">
+        <label for="sequence">Последовательность гена:</label>
         <textarea name="sequence" rows="4" cols="50" required>{{ gene.sequence }}</textarea><br><br>
-        <input type="submit" value="Сохранить">
+
+        <input type="submit" value="Сохранить изменения">
     </form>
-    <br>
-    <a href="{{ url_for('index') }}">Назад</a>
+
+    <!-- Кнопка "Назад к организму" -->
+    <a href="{{ url_for('organism_detail', organism_id=gene.organism_id) }}" class="button">Назад к организму</a>
+
+    <!-- Уведомление о том, что последовательность обновлена -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li style="color: {% if category == 'success' %}green{% else %}red{% endif %};">
+                    {{ message }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
 </body>
 </html>
