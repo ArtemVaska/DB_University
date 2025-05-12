@@ -122,7 +122,6 @@ def edit_organism_description(organism_id):
         else:
             organism.description = "Описание не предоставлено"  # Если пусто, ставим дефолтное значение
         db.session.commit()
-        flash('Описание организма обновлено.', 'success')
         return redirect(url_for('organism_detail', organism_id=organism.id))
 
     return render_template('edit_organism_description.html', organism=organism)
