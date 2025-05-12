@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список организмов</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -26,7 +27,14 @@
                 <form action="{{ url_for('delete_all_genes', organism_id=organism.id) }}" method="POST" style="display:inline;">
                     <button type="submit" class="button"
                             onclick="return confirm('Вы уверены, что хотите удалить все гены для организма с ID: {{ organism.id }} ({{ organism.name }})?')">
-                        Удалить все гены
+                        Очистить гены
+                    </button>
+                </form>
+                |
+                <form method="POST" action="{{ url_for('delete_organism', organism_id=organism.id) }}" style="display:inline;">
+                    <button type="submit" class="button"
+                            onclick="return confirm('Вы уверены, что хотите удалить запись для организма с ID: {{ organism.id }} ({{ organism.name }})?')">
+                        Удалить запись
                     </button>
                 </form>
             </td>

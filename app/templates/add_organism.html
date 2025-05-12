@@ -14,8 +14,8 @@
         <label for="name">Название организма:</label>
         <input type="text" name="name" id="name" value="{{ request.form['name'] if request.form.get('name') else '' }}" required><br><br>
 
-        <label for="description">Описание:</label>
-        <textarea name="description" rows="4" cols="50" required>{{ request.form['description'] if request.form.get('description') else '' }}</textarea><br><br>
+        <label for="description">Описание (необязательно):</label>
+        <textarea name="description" rows="4" cols="50">{{ request.form['description'] if request.form.get('description') else '' }}</textarea><br><br>
 
         <input type="submit" value="Добавить организм">
     </form>

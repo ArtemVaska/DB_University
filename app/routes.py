@@ -107,3 +107,36 @@ def delete_all_genes(organism_id):
     organism.update_gene_count()
 
     return redirect(url_for('index'))
+
+
+@app.route('/edit_organism_description/<string:organism_id>', methods=['GET', 'POST'])
+def edit_organism_description(organism_id):
+    organism = Organism.query.get_or_404(organism_id)
+
+    if request.method == 'POST':
+        new_description = request.form['description']
+        if new_description.strip():  # Проверяем, что описание не пустое
+            organism.description = new_description
+        else:
+            organism.description = "Описание не предоставлено"  # Если пусто, ставим дефолтное значение
+        db.session.commit()
+        flash('Описание организма обновлено.', 'success')
+        return redirect(url_for('organism_detail', organism_id=organism.id))
+
+    return render_template('edit_organism_description.html', organism=organism)
+
+
+@app.route('/delete_organism/<string:organism_id>', methods=['POST'])
+def delete_organism(organism_id):
+    organism = Organism.query.get_or_404(organism_id)
+
+    # Удаляем все гены этого организма
+    genes = Gene.query.filter_by(organism_id=organism.id).all()
+    for gene in genes:
+        db.session.delete(gene)
+
+    # Удаляем саму запись об организме
+    db.session.delete(organism)
+    db.session.commit()
+
+    return redirect(url_for('index'))

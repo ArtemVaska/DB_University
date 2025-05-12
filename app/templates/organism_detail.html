@@ -8,7 +8,19 @@
 <body>
     <h1>{{ organism.name }}</h1>
     <p><strong>ID:</strong> {{ organism.id }}</p>
-    <p><strong>Описание:</strong> {{ organism.description }}</p>
+    <p><strong>Описание:</strong>
+    {% if organism.description == "Описание не предоставлено" %}
+        <em>{{ organism.description }}</em>
+    {% else %}
+        {{ organism.description }}
+    {% endif %}
+    </p>
+
+    <!-- Кнопка для редактирования описания -->
+    <a href="{{ url_for('edit_organism_description', organism_id=organism.id) }}" class="button">
+        Изменить описание
+    </a>
+
     <p><strong>Кол-во генов:</strong> {{ organism.gene_count }}</p>
 
     <h2>Гены:</h2>

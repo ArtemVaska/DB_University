@@ -6,7 +6,7 @@ class Organism(db.Model):
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String, nullable=False)
     gene_count = db.Column(db.Integer, default=0)
-    description = db.Column(db.Text, nullable=True)
+    description = db.Column(db.String, default="Описание не предоставлено")  # Значение по умолчанию
 
     # Связь с таблицей генов (один-ко-многим)
     genes = db.relationship('Gene', backref='organism', lazy=True)
