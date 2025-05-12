@@ -3,14 +3,14 @@ from app import app, db
 from app.models import Gene, Organism
 
 
-# Главная страница — список всех генов
+# Главная страница — список всех организмов
 @app.route('/')
 def index():
     organisms = Organism.query.all()
     return render_template('index.html', organisms=organisms)
 
 
-# Просмотр информации об организме
+# Просмотр информации об организме и его генах
 @app.route('/organism/<string:organism_id>')
 def organism_detail(organism_id):
     organism = Organism.query.get_or_404(organism_id)
@@ -95,6 +95,7 @@ def delete_gene(gene_id):
     return redirect(url_for('organism_detail', organism_id=organism_id))
 
 
+# Удаление всех генов для организма
 @app.route('/delete_all_genes/<string:organism_id>', methods=['POST'])
 def delete_all_genes(organism_id):
     organism = Organism.query.get_or_404(organism_id)
@@ -109,6 +110,7 @@ def delete_all_genes(organism_id):
     return redirect(url_for('index'))
 
 
+# Изменение описания для организма
 @app.route('/edit_organism_description/<string:organism_id>', methods=['GET', 'POST'])
 def edit_organism_description(organism_id):
     organism = Organism.query.get_or_404(organism_id)
@@ -126,6 +128,7 @@ def edit_organism_description(organism_id):
     return render_template('edit_organism_description.html', organism=organism)
 
 
+# Удаление организма и всех его генов
 @app.route('/delete_organism/<string:organism_id>', methods=['POST'])
 def delete_organism(organism_id):
     organism = Organism.query.get_or_404(organism_id)
